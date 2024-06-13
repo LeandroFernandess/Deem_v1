@@ -44,7 +44,7 @@ def app():
     quantity = st.text_input("Quantidade")
     description = st.text_input("Descrição", placeholder="Este campo não é obrigatório")
     rc = st.text_input("Relação de Carga")
-    type = st.text_input("Tipo")
+    type = st.selectbox(label="Tipo da DEEM", options=["Maior", "Menor"], key="input_tipo")
 
     if st.button("Confirmar Deem"):
         add_to_firestore(code, quantity, description, rc, type)

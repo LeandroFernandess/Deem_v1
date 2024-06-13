@@ -39,16 +39,16 @@ def get_data_from_firestore():
 
 
 def app():
-    st.title("Formulário Streamlit Firebase")
+    st.title("Formulário de Deem")
     code = st.text_input("Código")
     quantity = st.text_input("Quantidade")
-    description = st.text_input("Descrição")
+    description = st.text_input("Descrição", placeholder="Este campo não é obrigatório")
     rc = st.text_input("Relação de Carga")
     type = st.text_input("Tipo")
 
-    if st.button("Enviar"):
+    if st.button("Confirmar Deem"):
         add_to_firestore(code, quantity, description, rc, type)
-        st.success("Informações adicionadas ao Firebase")
+        st.success("Divergência inserida com sucesso!")
 
     df = get_data_from_firestore()
     st.dataframe(df)

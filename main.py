@@ -41,7 +41,7 @@ def get_data_from_firestore():
 def app():
     st.title("Formulário Streamlit Firebase")
     code = st.text_input("Código")
-    quantity = st.text_input("quantity")
+    quantity = st.text_input("Quantidade")
     description = st.text_input("Descrição")
     rc = st.text_input("Relação de Carga")
     type = st.text_input("Tipo")

@@ -57,7 +57,7 @@ def app():
         st.success("Divergência inserida com sucesso!")
 
     df = get_data_from_firestore()
-    st.dataframe(df, sep=";")
+    st.dataframe(df)
 
 
 if __name__ == "__main__":

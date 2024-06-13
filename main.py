@@ -41,11 +41,10 @@ def get_data_from_firestore():
 
 
 def convert_df_to_csv(df):
-    csv_buffer = io.StringIO()
-    df.to_csv(csv_buffer, index=False, sep=',')
-    csv_str = csv_buffer.getvalue()
-    csv_buffer.close()
-    return csv_str
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+    return output.getvalue()
 
 
 def app():

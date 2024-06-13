@@ -14,10 +14,11 @@ except ValueError as e:
 
 db = firestore.client()
 
-def add_to_firestore(code, quantity, rc, type, area):
+def add_to_firestore(register, code, quantity, rc, type, area):
     doc_ref = db.collection("users").document()
     doc_ref.set(
         {
+            "Register": register,
             "Code": code,
             "Quantity": quantity,
             "Rc": rc,
@@ -44,6 +45,7 @@ def convert_df_to_excel(df):
 
 def app():
     st.title("Formulário de Deem")
+    register - st.text_input('Matrícula')
     code = st.text_input("Código")
     quantity = st.text_input("Quantidade")
     rc = st.text_input("Relação de Carga", placeholder="Campo não obrigatório, preencha-o caso tenha as informações da carga")
@@ -55,7 +57,7 @@ def app():
         max_chars=9999)
 
     if st.button("Confirmar Deem"):
-        add_to_firestore(code, quantity, rc, type, area)
+        add_to_firestore(register, code, quantity, rc, type, area)
         st.success("Divergência inserida com sucesso!")
 
     df = get_data_from_firestore()

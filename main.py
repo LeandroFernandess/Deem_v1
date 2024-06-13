@@ -14,7 +14,7 @@ except ValueError as e:
 db = firestore.client()
 
 
-def add_to_firestore(code, quantity, description, rc, type, file, area):
+def add_to_firestore(code, quantity, description, rc, type, area):
     doc_ref = db.collection("users").document()
     doc_ref.set(
         {
@@ -23,7 +23,6 @@ def add_to_firestore(code, quantity, description, rc, type, file, area):
             "description": description,
             "rc": rc,
             "type": type,
-            "file": file,
             "area": area
         }
     )
@@ -47,7 +46,6 @@ def app():
     description = st.text_input("Descrição", placeholder="Este campo não é obrigatório")
     rc = st.text_input("Relação de Carga")
     type = st.selectbox(label="Tipo da DEEM", options=["Maior", "Menor"], key="input_tipo")
-    file =  st.file_uploader(label="Imagem", key="input_foto")
     area = st.text_area(
         label="Comentário",
         key="input_comentário",
@@ -55,7 +53,7 @@ def app():
         max_chars=9999)
 
     if st.button("Confirmar Deem"):
-        add_to_firestore(code, quantity, description, rc, type, file, area)
+        add_to_firestore(code, quantity, description, rc, type, area)
         st.success("Divergência inserida com sucesso!")
 
     df = get_data_from_firestore()

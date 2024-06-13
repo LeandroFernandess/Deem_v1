@@ -18,12 +18,12 @@ def add_to_firestore(code, quantity, description, rc, type, area):
     doc_ref = db.collection("users").document()
     doc_ref.set(
         {
-            "code": code,
-            "quantity": quantity,
-            "description": description,
-            "rc": rc,
-            "type": type,
-            "area": area
+            "Code": code,
+            "Quantity": quantity,
+            "Description": description,
+            "Rc": rc,
+            "Type": type,
+            "Area": area
         }
     )
 

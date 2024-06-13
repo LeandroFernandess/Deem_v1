@@ -69,14 +69,13 @@ def app():
     st.dataframe(df)
 
     if not df.empty:
-        csv = convert_df_to_csv(df)
+        excel = convert_df_to_excel(df)
         st.download_button(
-            label="Baixar dados como CSV",
-            data=csv,
-            file_name='dados_deem.csv',
-            mime='text/csv',
+            label="Baixar dados como Excel",
+            data=excel,
+            file_name='dados_deem.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         )
-
 
 if __name__ == "__main__":
     app()

@@ -14,7 +14,6 @@ except ValueError as e:
 
 db = firestore.client()
 
-
 def add_to_firestore(code, quantity, description, rc, type, area):
     doc_ref = db.collection("users").document()
     doc_ref.set(
@@ -28,7 +27,6 @@ def add_to_firestore(code, quantity, description, rc, type, area):
         }
     )
 
-
 def get_data_from_firestore():
     users_ref = db.collection("users")
     docs = users_ref.stream()
@@ -39,13 +37,11 @@ def get_data_from_firestore():
 
     return pd.DataFrame(data)
 
-
-def convert_df_to_csv(df):
+def convert_df_to_excel(df):
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Sheet1')
     return output.getvalue()
-
 
 def app():
     st.title("Formulário de Deem")

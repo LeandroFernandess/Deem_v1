@@ -45,7 +45,7 @@ def convert_df_to_excel(df):
 
 def app():
     st.title("Formulário de Deem")
-    register - st.text_input('Matrícula')
+    register = st.text_input('Matrícula')
     code = st.text_input("Código")
     quantity = st.text_input("Quantidade")
     rc = st.text_input("Relação de Carga", placeholder="Campo não obrigatório, preencha-o caso tenha as informações da carga")

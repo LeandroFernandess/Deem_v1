@@ -3,6 +3,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import pandas as pd
+import io
 
 # Use a service account
 try:
@@ -39,6 +40,14 @@ def get_data_from_firestore():
     return pd.DataFrame(data)
 
 
+def convert_df_to_csv(df):
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False, sep=',')
+    csv_str = csv_buffer.getvalue()
+    csv_buffer.close()
+    return csv_str
+
+
 def app():
     st.title("Formulário de Deem")
     code = st.text_input("Código")
@@ -58,6 +67,15 @@ def app():
 
     df = get_data_from_firestore()
     st.dataframe(df)
+
+    if not df.empty:
+        csv = convert_df_to_csv(df)
+        st.download_button(
+            label="Baixar dados como CSV",
+            data=csv,
+            file_name='dados_deem.csv',
+            mime='text/csv',
+        )
 
 
 if __name__ == "__main__":

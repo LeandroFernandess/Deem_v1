@@ -30,7 +30,8 @@ def app():
         code = st.text_input("Código", value=user_data.get("code", ""))
         quantity = st.text_input("Quantidade", value=user_data.get("quantity", ""))
         rc = st.text_input("Relação de Carga", value=user_data.get("rc", ""))
-        type = st.select_box("Tipo da Deem", options=["Maior", "Menor"], value=user_data.get("type", ""))
+        type = st.selectbox("Tipo da Deem", options=["Maior", "Menor"], index=0 if user_data.get("type") is None else ["Maior", "Menor"].index(user_data.get("type")))
+
 
         if st.button("Enviar"):
             if (

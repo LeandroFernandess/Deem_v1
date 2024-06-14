@@ -1,44 +1,50 @@
 import streamlit as st
-from firebase_admin import auth
-import pyrebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from data.adding_data import add_data
+from data.getting_data import get_data
+from login.login import login_user
+
+# Inicializando o serviço do banco de dados Firebase:
+try:
+    firebase_admin.get_app()
+except ValueError as e:
+    cred = credentials.Certificate("credentials.json")
+    firebase_admin.initialize_app(cred)
+
+database = firestore.client()
 
 
-# Configuração do Firebase:
+def app():
+    user_id = (
+        login_user()
+    )  # Supondo que login_user retorna o identificador do usuário logado
+
+    if user_id:
+        st.title("Formulário de Deem's")
+
+        # Obtendo os dados do usuário logado
+        user_data = get_data(user_id)
+
+        code = st.text_input("Código", value=user_data.get("code", ""))
+        quantity = st.text_input("Quantidade", value=user_data.get("quantity", ""))
+        description = st.text_input("Descrição", value=user_data.get("description", ""))
+        rc = st.text_input("Relação de Carga", value=user_data.get("rc", ""))
+        type = st.text_input("Tipo", value=user_data.get("type", ""))
+
+        if st.button("Enviar"):
+            if (
+                code and quantity and description and rc and type
+            ):  # Verificando se todos os campos foram preenchidos
+                add_data(user_id, code, quantity, description, rc, type)
+                st.success("Informações adicionadas ao Firebase")
+            else:
+                st.error("Por favor, preencha todos os campos.")
+
+        df = get_data()  # Se você deseja mostrar todos os dados
+        st.dataframe(df)
 
 
-config = {
-    "apiKey": "AIzaSyDJnEKvU9-yJSlTqGT3O9as2paIzJFNBts",
-    "authDomain": "deem-fa6c8.firebaseapp.com",
-    "databaseURL": "https://deem-fa6c8-default-rtdb.firebaseio.com",
-    "projectId": "deem-fa6c8",
-    "storageBucket": "deem-fa6c8.appspot.com",
-    "messagingSenderId": "165164284179",
-    "appId": "1:165164284179:web:c9b6e99c834dffb08702e6",
-}
-
-# Inicializando e autenticando o aplicativo:
-
-
-firebase = pyrebase.initialize_app(config)
-auth = firebase.auth()
-
-
-# Função para verificar se o usuário e senha inseridas existem no banco de dados Firebase:
-
-
-def login_user():
-
-    st.title("Gerenciamento de Deem's - Login")
-    email = st.text_input("E-mail", key="input_email")
-    password = st.text_input("Senha", key="input_password", type="password")
-
-    if st.button("Entrar"):
-        try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            st.success("Login bem-sucedido!")
-            return user["localId"]  # Retornando o identificador do usuário
-        except:
-            st.error(
-                "Usuário ou senha incorretos, verifique as informações inseridas e se o erro persistir entre em contato com seu gestor."
-            )
-            return None
+if __name__ == "__main__":
+    app()

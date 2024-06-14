@@ -1,76 +1,44 @@
 import streamlit as st
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-import pandas as pd
-import io
+from firebase_admin import auth
+import pyrebase
 
-# Use a service account
-try:
-    firebase_admin.get_app()
-except ValueError as e:
-    cred = credentials.Certificate("credentials.json")
-    firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+# Configuração do Firebase:
 
-def add_to_firestore(register, code, quantity, rc, type, area):
-    doc_ref = db.collection("users").document()
-    doc_ref.set(
-        {
-            "Register": register,
-            "Code": code,
-            "Quantity": quantity,
-            "Rc": rc,
-            "Type": type,
-            "Area": area
-        }
-    )
 
-def get_data_from_firestore():
-    users_ref = db.collection("users")
-    docs = users_ref.stream()
+config = {
+    "apiKey": "AIzaSyDJnEKvU9-yJSlTqGT3O9as2paIzJFNBts",
+    "authDomain": "deem-fa6c8.firebaseapp.com",
+    "databaseURL": "https://deem-fa6c8-default-rtdb.firebaseio.com",
+    "projectId": "deem-fa6c8",
+    "storageBucket": "deem-fa6c8.appspot.com",
+    "messagingSenderId": "165164284179",
+    "appId": "1:165164284179:web:c9b6e99c834dffb08702e6",
+}
 
-    data = []
-    for doc in docs:
-        data.append(doc.to_dict())
+# Inicializando e autenticando o aplicativo:
 
-    return pd.DataFrame(data)
 
-def convert_df_to_excel(df):
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Sheet1')
-    return output.getvalue()
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
 
-def app():
-    st.title("Formulário de Deem")
-    register = st.text_input('Nome', placeholder='Insira o nome do responsável pela notificação da DEEM')
-    code = st.text_input("Código")
-    quantity = st.text_input("Quantidade")
-    rc = st.text_input("Relação de Carga", placeholder="Campo não obrigatório, preencha-o caso tenha as informações da carga")
-    type = st.selectbox(label="Tipo da DEEM", options=["Maior", "Menor"], key="input_tipo")
-    area = st.text_area(
-        label="Comentário",
-        key="input_comentário",
-        placeholder="Este campo não é obrigatório, preencha-o caso haja informações adicionais.",
-        max_chars=9999)
 
-    if st.button("Confirmar Deem"):
-        add_to_firestore(register, code, quantity, rc, type, area)
-        st.success("Divergência inserida com sucesso!")
+# Função para verificar se o usuário e senha inseridas existem no banco de dados Firebase:
 
-    df = get_data_from_firestore()
-    st.dataframe(df)
 
-    if not df.empty:
-        excel = convert_df_to_excel(df)
-        st.download_button(
-            label="Baixar dados como Excel",
-            data=excel,
-            file_name='dados_deem.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        )
+def login_user():
 
-if __name__ == "__main__":
-    app()
+    st.title("Gerenciamento de Deem's - Login")
+    email = st.text_input("E-mail", key="input_email")
+    password = st.text_input("Senha", key="input_password", type="password")
+
+    if st.button("Entrar"):
+        try:
+            user = auth.sign_in_with_email_and_password(email, password)
+            st.success("Login bem-sucedido!")
+            return user["localId"]  # Retornando o identificador do usuário
+        except:
+            st.error(
+                "Usuário ou senha incorretos, verifique as informações inseridas e se o erro persistir entre em contato com seu gestor."
+            )
+            return None

@@ -29,16 +29,15 @@ def app():
 
         code = st.text_input("Código", value=user_data.get("code", ""))
         quantity = st.text_input("Quantidade", value=user_data.get("quantity", ""))
-        description = st.text_input("Descrição", value=user_data.get("description", ""))
         rc = st.text_input("Relação de Carga", value=user_data.get("rc", ""))
-        type = st.text_input("Tipo", value=user_data.get("type", ""))
+        type = st.check_box("Tipo da Deem", options=["Maior", "Menor], value=user_data.get("type", ""))
 
         if st.button("Enviar"):
             if (
-                code and quantity and description and rc and type
+                code and quantity and rc and type
             ):  # Verificando se todos os campos foram preenchidos
                 add_data(user_id, code, quantity, description, rc, type)
-                st.success("Informações adicionadas ao Firebase")
+                st.success("Divergência inserida com sucesso!")
             else:
                 st.error("Por favor, preencha todos os campos.")
 

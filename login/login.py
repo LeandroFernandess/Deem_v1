@@ -26,7 +26,7 @@ auth = firebase.auth()
 # Função para verificar se o usuário e senha inseridas existem no banco de dados Firebase:
 
 
-def login_user():
+def Login():
 
     st.title("Gerenciamento de Deem's - Login")
     email = st.text_input("E-mail", key="input_email")

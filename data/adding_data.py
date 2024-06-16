@@ -21,13 +21,13 @@ database = firestore.client()
 # Criando a função para adicionar as informações do formulário no banco de dados Firebase:
 
 
-def add_data(code, quantity, description, rc, type):
+def add_data(name, code, quantity, rc, type):
     doc_ref = database.collection("users").document()
     doc_ref.set(
         {
+            "name": name,
             "code": code,
             "quantity": quantity,
-            "description": description,
             "rc": rc,
             "type": type,
         }

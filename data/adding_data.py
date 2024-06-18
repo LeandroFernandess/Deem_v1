@@ -22,7 +22,9 @@ def AddImage(uploaded_file, user_id):
     return blob.public_url
 
 
-def AddData(name, code, quantity, rc, area, observation, type, files, user_id):
+def AddData(
+    name, code, description, quantity, rc, area, observation, type, files, date, user_id
+):
     file_urls = [AddImage(file, user_id) for file in files]
 
     doc_ref = database.collection("users").document()
@@ -30,11 +32,13 @@ def AddData(name, code, quantity, rc, area, observation, type, files, user_id):
         {
             "Responsável": name,
             "Código": code,
+            "Descrição": description,
             "Quantidade": quantity,
             "RC": rc,
             "Área": area,
             "Observação": observation,
             "Tipo": type,
             "Imagem": file_urls,
+            "Data": date,
         }
     )

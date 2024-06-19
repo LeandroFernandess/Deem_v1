@@ -23,7 +23,19 @@ def AddImage(uploaded_file, user_id):
 
 
 def AddData(
-    name, code, description, quantity, rc, area, observation, type, files, date, user_id
+    name,
+    code,
+    description,
+    quantity,
+    std,
+    total,
+    rc,
+    area,
+    observation,
+    type,
+    files,
+    date,
+    user_id,
 ):
     file_urls = [AddImage(file, user_id) for file in files]
 
@@ -34,6 +46,8 @@ def AddData(
             "Código": code,
             "Descrição": description,
             "Quantidade": quantity,
+            "Valor Unitário": std,
+            "Valor Total": total,
             "RC": rc,
             "Área": area,
             "Observação": observation,

@@ -3,6 +3,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from inputs.form import FormDeem
+from streamlit_option_menu import option_menu
+from information.info import Table
 
 # Inicializando o serviço do banco de dados Firebase:
 
@@ -14,16 +16,28 @@ except ValueError as e:
 
 database = firestore.client()
 
+st.set_page_config(page_title="Controle de Deem")
+
 
 def app():
 
-    option = st.sidebar.radio(
-        "Menu de navegação", options=["Formulário de Deem 🗒️", "Recarregar 🔃"]
-    )
+    with st.sidebar:
+        option = option_menu(
+            menu_title="Menu de navegação",
+            options=[
+                "Formulário de Deem",
+                "Visão Geral",
+                "Recarregar",
+            ],
+            icons=["journal-text", "bar-chart-fill", "arrow-clockwise"],
+            default_index=0,
+        )
 
-    if option == "Formulário de Deem 🗒️":
+    if option == "Formulário de Deem":
         FormDeem()
-    if option == "Recarregar 🔃":
+    if option == "Visão Geral":
+        Table()
+    if option == "Recarregar":
         pass
 
 

@@ -2,7 +2,6 @@ import streamlit as st
 from data.adding_data import AddData
 from data.getting_data import get_data
 from login.login import Login
-from export.excel_file import ConvertExcel
 from inputs.Updates import UpdateDescription, CalculateTotal
 
 
@@ -25,6 +24,7 @@ def FormDeem():
         "<h1 style='text-align: center;'>Formulário de divergências</h1>",
         unsafe_allow_html=True,
     )
+    st.write("---")
 
     # Obtendo os dados do usuário logado:
 
@@ -151,20 +151,10 @@ def FormDeem():
                 input_date,
                 user_id,
             )
-            st.success("Divergência inserida com sucesso!")
+            st.success(
+                "Divergência inserida com sucesso! Você pode verificar a informação na guia **Visão Geral**"
+            )
         else:
             st.error(
                 "Por favor, preencha todos os campos obrigatórios. (Nome, Código e Quantidade)"
             )
-
-    Table = get_data()
-    st.dataframe(Table)
-
-    if not Table.empty:
-        excel_data = ConvertExcel(Table)
-        st.download_button(
-            label="Extrair para Excel",
-            data=excel_data,
-            file_name="Deem.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )

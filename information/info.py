@@ -66,7 +66,7 @@ def Table():
 
     if Table.empty:
         st.warning(
-            "Nenhum dado inserido no banco de dados, por favor, preencha o formulário para visualizar os dados"
+            "Não há informações inseridas no banco de dados para visualização. Preencha o formulário para visualizar os dados."
         )
     else:
         # Selecionar e ordenar as colunas:

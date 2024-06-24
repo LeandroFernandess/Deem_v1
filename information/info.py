@@ -62,33 +62,48 @@ def Table():
 
     Table = get_data()
 
-    # Selecionar e ordenar as colunas:
+    # Verificar se o DataFrame não está vazio e exibir uma mensagem caso contrário:
 
-    desired_columns = [
-        "Responsável",
-        "Código",
-        "Descrição",
-        "Quantidade",
-        "Valor Unitário",
-        "Valor Total",
-        "Tipo",
-        "RC",
-        "Observação",
-        "Data",
-    ]
-    Table = Table[desired_columns]
-
-    # Exibir o DataFrame:
-
-    st.dataframe(Table)
-
-    # Verificar se o DataFrame não está vazio e permitir download:
-
-    if not Table.empty:
-        excel_data = ConvertExcel(Table)
-        st.download_button(
-            label="Extrair para Excel",
-            data=excel_data,
-            file_name="Deem.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    if Table.empty:
+        st.warning(
+            "Nenhum dado inserido no banco de dados, por favor, preencha o formulário para visualizar os dados"
         )
+    else:
+        # Selecionar e ordenar as colunas:
+
+        desired_columns = [
+            "Responsável",
+            "Código",
+            "Descrição",
+            "Quantidade",
+            "Valor Unitário",
+            "Valor Total",
+            "Tipo",
+            "RC",
+            "Observação",
+            "Data",
+        ]
+
+        # Garantir que as colunas desejadas estão no DataFrame:
+
+        missing_columns = [col for col in desired_columns if col not in Table.columns]
+        if missing_columns:
+            st.error(
+                f"As seguintes colunas estão faltando no DataFrame: {', '.join(missing_columns)}"
+            )
+        else:
+            Table = Table[desired_columns]
+
+            # Exibir o DataFrame:
+
+            st.dataframe(Table)
+
+            # Permitir download se o DataFrame não estiver vazio:
+
+            excel_data = ConvertExcel(Table)
+            st.download_button(
+                label="Extrair para Excel",
+                data=excel_data,
+                file_name="Deem.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )

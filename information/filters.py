@@ -8,7 +8,7 @@ def filters(Table):
     
     responsible = Table["Responsável"].unique()
     selected_responsible = st.multiselect(
-        "Filtrar por Responsável",
+        "Filtrar por responsável",
         responsible,
         placeholder="Escolha um responsável",
     )
@@ -44,7 +44,7 @@ def filters(Table):
     # Filtrar os dados por RC:
     
     rc_filter = st.text_input(
-        "Filtrar por Relação de Carga",
+        "Filtrar por relação de rarga",
         value="",
         placeholder="Digite a Relação de Carga",
     )

@@ -1,21 +1,13 @@
 from data.getting_data import get_data
 import streamlit as st
 from login.login import Login
-from export.excel_file import ConvertExcel
+from export.excel_file import ConvertExcel, ConvertCSV
+from information.filters import filters
 
 
 def Table():
 
-    # Criando o título do formulário:
-
-    st.markdown(
-        "<h1 style='text-align: center;'>Relatório de divergências</h1>",
-        unsafe_allow_html=True,
-    )
-    st.write("---")
-
     # Verificando se o usuário está logado:
-
     if "user_id" not in st.session_state:
         user_id = Login()
         if user_id:
@@ -25,12 +17,17 @@ def Table():
     else:
         user_id = st.session_state.user_id
 
-    # Obtendo os dados do usuário logado:
+    # Criando o título do formulário:
+    st.markdown(
+        "<h1 style='text-align: center;'>Relatório de divergências</h1>",
+        unsafe_allow_html=True,
+    )
+    st.write("---")
 
+    # Obtendo os dados do usuário logado:
     user_data = get_data(user_id)
 
     # Mantendo os valores dos inputs no session state:
-
     if "name" not in st.session_state:
         st.session_state.name = user_data.get("name", "")
 
@@ -59,18 +56,15 @@ def Table():
         st.session_state.input_description = user_data.get("description", "")
 
     # Obter os dados:
-
     Table = get_data()
 
     # Verificar se o DataFrame não está vazio e exibir uma mensagem caso contrário:
-
     if Table.empty:
         st.warning(
-            "Não há informações inseridas no banco de dados para visualização. Preencha o formulário para visualizar os dados."
+            "Nenhum dado inserido no banco de dados, por favor, preencha o formulário para visualizar os dados"
         )
     else:
         # Selecionar e ordenar as colunas:
-
         desired_columns = [
             "Responsável",
             "Código",
@@ -85,7 +79,6 @@ def Table():
         ]
 
         # Garantir que as colunas desejadas estão no DataFrame:
-
         missing_columns = [col for col in desired_columns if col not in Table.columns]
         if missing_columns:
             st.error(
@@ -94,16 +87,26 @@ def Table():
         else:
             Table = Table[desired_columns]
 
-            # Exibir o DataFrame:
+            # Aplicar filtros:
+            Table = filters(Table)
 
+            # Exibir o DataFrame filtrado:
             st.dataframe(Table)
 
             # Permitir download se o DataFrame não estiver vazio:
+            if not Table.empty:
+                excel_data = ConvertExcel(Table)
+                st.download_button(
+                    label="Extrair para .xlsx",
+                    data=excel_data,
+                    file_name="Deem.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
 
-            excel_data = ConvertExcel(Table)
-            st.download_button(
-                label="Extrair para Excel",
-                data=excel_data,
-                file_name="Deem.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
+                csv_data = ConvertCSV(Table)
+                st.download_button(
+                    label="Extrair para .csv",
+                    data=csv_data,
+                    file_name="Deem.csv",
+                    mime="text/csv",
+                )

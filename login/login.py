@@ -2,10 +2,7 @@ import streamlit as st
 from firebase_admin import auth
 import pyrebase
 
-
 # Configuração do Firebase:
-
-
 config = {
     "apiKey": "AIzaSyDJnEKvU9-yJSlTqGT3O9as2paIzJFNBts",
     "authDomain": "deem-fa6c8.firebaseapp.com",
@@ -17,17 +14,12 @@ config = {
 }
 
 # Inicializando e autenticando o aplicativo:
-
-
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
 
 # Função para verificar se o usuário e senha inseridas existem no banco de dados Firebase:
-
-
 def Login():
-
     st.title("Gerenciamento de Deem's - Login")
     email = st.text_input("E-mail", key="input_email")
     password = st.text_input("Senha", key="input_password", type="password")

@@ -42,7 +42,7 @@ def app():
                 options=["Formulário de Deem", "Visão Geral", "Recarregar", "Sair"],
                 icons=[
                     "journal-text",
-                    "bar-chart-fill",
+                    "table",
                     "arrow-clockwise",
                     "door-closed",
                 ],

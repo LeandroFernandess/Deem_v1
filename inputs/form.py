@@ -61,11 +61,15 @@ def FormDeem():
 
     # Criando os inputs para o usuário:
 
-    input_name = st.text_input(
-        "Nome",
-        value=st.session_state.name,
-        key="input_name",
-        placeholder="Insira o nome do responsável pela notificação da Deem",
+    input_name = (
+        st.text_input(
+            "Nome",
+            value=st.session_state.name,
+            key="input_name",
+            placeholder="Insira o nome do responsável pela notificação da Deem",
+        )
+        .upper()
+        .replace(" ", "")
     )
 
     input_code = st.text_input(

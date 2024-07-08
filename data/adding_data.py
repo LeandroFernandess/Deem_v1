@@ -37,22 +37,30 @@ def AddData(
     date,
     user_id,
 ):
+
+    # Gerando URLs das imagens (não alterado)
     file_urls = [AddImage(file, user_id) for file in files]
 
+    # Definindo status fixo
+    status = "Pendente de análise"
+
+    # Criando referência ao documento e definindo os dados
     doc_ref = database.collection("users").document()
     doc_ref.set(
         {
-            "Responsável": name,
-            "Código": code,
-            "Descrição": description,
+            "ID": doc_ref.id,
+            "Responsavel": name,
+            "Codigo": code,
+            "Descricao": description,
             "Quantidade": quantity,
-            "Valor Unitário": std,
+            "Valor Unitario": std,
             "Valor Total": total,
             "RC": rc,
-            "Área": area,
-            "Observação": observation,
+            "Area": area,
+            "Observacao": observation,
             "Tipo": type,
             "Imagem": file_urls,
             "Data": date,
+            "Status": status,  # Passando o valor fixo para Status
         }
     )

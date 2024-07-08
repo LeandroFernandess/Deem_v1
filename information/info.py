@@ -1,8 +1,8 @@
-from data.getting_data import get_data
+from Data.Getting_data import GetData
 import streamlit as st
-from login.login import Login
-from export.excel_file import ConvertExcel, ConvertCSV
-from information.filters import filters
+from Authentication.login import Login
+from Export.Excel_file import ConvertExcel, ConvertCSV
+from Information.Filters import filters
 
 
 def Table():
@@ -25,7 +25,7 @@ def Table():
     st.write("---")
 
     # Obtendo os dados do usuário logado:
-    user_data = get_data(user_id)
+    user_data = GetData(user_id)
 
     # Mantendo os valores dos inputs no session state:
     if "name" not in st.session_state:
@@ -55,8 +55,11 @@ def Table():
     if "input_description" not in st.session_state:
         st.session_state.input_description = user_data.get("description", "")
 
+    if "status" not in st.session_state:
+        st.session_state.status = user_data.get("status", "")
+
     # Obter os dados:
-    Table = get_data()
+    Table = GetData()
 
     # Verificar se o DataFrame não está vazio e exibir uma mensagem caso contrário:
     if Table.empty:
@@ -66,16 +69,18 @@ def Table():
     else:
         # Selecionar e ordenar as colunas:
         desired_columns = [
-            "Responsável",
-            "Código",
-            "Descrição",
+            "Responsavel",
+            "Codigo",
+            "Descricao",
             "Quantidade",
-            "Valor Unitário",
+            "Valor Unitario",
             "Valor Total",
             "Tipo",
+            "Area",
             "RC",
-            "Observação",
+            "Observacao",
             "Data",
+            "Status",
         ]
 
         # Garantir que as colunas desejadas estão no DataFrame:

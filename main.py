@@ -2,11 +2,12 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from inputs.form import FormDeem
+from Inputs.Form import FormDeem
 from streamlit_option_menu import option_menu
-from information.info import Table
-from login.login import Login
-from logout.logoff import logout
+from Information.Info import Table
+from Authentication.login import Login
+from Logout.Logoff import Logout
+from Edition.Edit import Edits
 
 # Inicializando o serviço do banco de dados Firebase:
 try:
@@ -39,11 +40,18 @@ def app():
         with st.sidebar:
             option = option_menu(
                 menu_title="Menu de navegação",
-                options=["Formulário de Deem", "Visão Geral", "Recarregar", "Sair"],
+                options=[
+                    "Formulário de Deem",
+                    "Visão Geral",
+                    "Gráfico",
+                    "Editar Deem",
+                    "Sair",
+                ],
                 icons=[
                     "journal-text",
                     "table",
-                    "arrow-clockwise",
+                    "bar-chart-fill",
+                    "pencil-square",
                     "door-closed",
                 ],
                 default_index=0,
@@ -53,10 +61,12 @@ def app():
             FormDeem()
         if option == "Visão Geral":
             Table()
-        if option == "Recarregar":
+        if option == "Gráfico":
             pass
+        if option == "Editar Deem":
+            Edits()
         if option == "Sair":
-            logout()
+            Logout()
 
 
 if __name__ == "__main__":

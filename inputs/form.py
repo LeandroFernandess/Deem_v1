@@ -1,6 +1,6 @@
 import streamlit as st
 from data.adding_data import AddData
-from data.getting_data import get_data
+from data.getting_data import GetData
 from login.login import Login
 from inputs.Updates import UpdateDescription, CalculateTotal
 

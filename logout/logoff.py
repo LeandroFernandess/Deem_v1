@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-def logout():
+def Logout():
 
     st.session_state.logged_in = False
     st.session_state.user_id = None

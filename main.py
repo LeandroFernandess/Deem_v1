@@ -5,7 +5,7 @@ from firebase_admin import firestore
 from inputs.form import FormDeem
 from streamlit_option_menu import option_menu
 from information.info import Table
-from authentication.login import Login
+from login.login import Login
 from logout.logoff import Logout
 from edition.edit import Edits
 

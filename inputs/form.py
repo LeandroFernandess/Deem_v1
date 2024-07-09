@@ -28,7 +28,7 @@ def FormDeem():
 
     # Obtendo os dados do usuário logado:
 
-    user_data = get_data(user_id)
+    user_data = GetData(user_id)
 
     # Mantendo os valores dos inputs no session state:
 

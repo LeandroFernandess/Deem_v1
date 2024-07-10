@@ -1,13 +1,15 @@
-from data.getting_data import GetData, GetDataToEdit, UpdateData
+from Data.Getting_data import GetData, GetDataToEdit, UpdateData
 import streamlit as st
-from login.login import Login
-from information.filters import filters
+from Authentication.login import Login
+from Information.Filters import filters
+from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 # Senha para acesso à página de edições
 password = "123456"
 
 
 def Edits():
+
     if "editable_data" not in st.session_state:
         st.session_state.editable_data = {}
 
@@ -109,9 +111,27 @@ def Edits():
         else:
             Table = Table[desired_columns]
 
+            # Aplicar filtros:
             Table = filters(Table)
+
+            # Configurar opções da tabela:
+            gb = GridOptionsBuilder.from_dataframe(Table)
+            gridOptions = gb.build()
+
             st.write("---")
-            selected_row = st.dataframe(Table)
+
+            # Exibir a tabela interativa:
+            AgGrid(
+                Table,
+                gridOptions=gridOptions,
+                columns_auto_size_mode=ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW,
+                theme=AgGridTheme.STREAMLIT,
+                update_mode="MODEL_CHANGED",
+                fit_columns_on_grid_load=False,
+                enable_enterprise_modules=False,
+                height=200,
+                reload_data=True,
+            )
             st.write("---")
             selected_row_idx = st.selectbox(
                 "Selecione a linha para editar", Table.index

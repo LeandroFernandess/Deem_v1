@@ -1,7 +1,7 @@
-from Data.Getting_data import GetData, GetDataToEdit, UpdateData
+from data.getting_data import GetData, GetDataToEdit, UpdateData
 import streamlit as st
-from Authentication.login import Login
-from Information.Filters import filters
+from login.login import Login
+from information.filters import filters
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 # Senha para acesso à página de edições

@@ -3,6 +3,7 @@ import streamlit as st
 from login.login import Login
 from export.excel_file import ConvertExcel, ConvertCSV
 from information.filters import filters
+from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 
 def Table():
@@ -95,8 +96,26 @@ def Table():
             # Aplicar filtros:
             Table = filters(Table)
 
-            # Exibir o DataFrame filtrado:
-            st.dataframe(Table)
+            # Configurar opções da tabela:
+            gb = GridOptionsBuilder.from_dataframe(Table)
+            gridOptions = gb.build()
+
+            st.write("---")
+
+            # Exibir a tabela interativa:
+            AgGrid(
+                Table,
+                gridOptions=gridOptions,
+                columns_auto_size_mode=ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW,
+                theme=AgGridTheme.STREAMLIT,  # Outras opções: 'STREAMLIT', 'ALPINE', 'BALHAM', 'MATERIAL'
+                update_mode="MODEL_CHANGED",  # Opções de atualização: 'SELECTION_CHANGED', 'MODEL_CHANGED', etc.
+                fit_columns_on_grid_load=False,
+                enable_enterprise_modules=False,
+                height=200,
+                reload_data=True,
+            )
+
+            st.write("---")
 
             # Permitir download se o DataFrame não estiver vazio:
             if not Table.empty:

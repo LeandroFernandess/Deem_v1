@@ -1,8 +1,8 @@
-from Data.Getting_data import GetData
+from data.getting_data import GetData
 import streamlit as st
-from Authentication.login import Login
-from Export.Excel_file import ConvertExcel, ConvertCSV
-from Information.Filters import filters
+from login.login import Login
+from export.excel_file import ConvertExcel, ConvertCSV
+from information.filters import filters
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 

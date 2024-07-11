@@ -1,13 +1,12 @@
-from data.getting_data import GetData
+from Data.Getting_data import GetData
 import streamlit as st
-from login.login import Login
-from export.excel_file import ConvertExcel, ConvertCSV
-from information.filters import filters
+from Authentication.login import Login
+from Export.Excel_file import ConvertExcel, ConvertCSV
+from Information.Filters import filters
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 
 def Table():
-
     # Verificando se o usuário está logado:
     if "user_id" not in st.session_state:
         user_id = Login()
@@ -96,6 +95,20 @@ def Table():
             # Aplicar filtros:
             Table = filters(Table)
 
+            # Modificar a coluna 'Quantidade' com sinais '+' ou '-'
+            Table["Quantidade"] = Table.apply(
+                lambda row: (
+                    "+" + str(row["Quantidade"])
+                    if row["Tipo"] == "Maior"
+                    else (
+                        "-" + str(row["Quantidade"])
+                        if row["Tipo"] == "Menor"
+                        else row["Quantidade"]
+                    )
+                ),
+                axis=1,
+            )
+
             # Configurar opções da tabela:
             gb = GridOptionsBuilder.from_dataframe(Table)
             gridOptions = gb.build()
@@ -107,11 +120,11 @@ def Table():
                 Table,
                 gridOptions=gridOptions,
                 columns_auto_size_mode=ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW,
-                theme=AgGridTheme.STREAMLIT,  # Outras opções: 'STREAMLIT', 'ALPINE', 'BALHAM', 'MATERIAL'
-                update_mode="MODEL_CHANGED",  # Opções de atualização: 'SELECTION_CHANGED', 'MODEL_CHANGED', etc.
+                theme=AgGridTheme.STREAMLIT,
+                update_mode="MODEL_CHANGED",
                 fit_columns_on_grid_load=False,
                 enable_enterprise_modules=False,
-                height=200,
+                height=400,
                 reload_data=True,
             )
 

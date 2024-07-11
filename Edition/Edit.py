@@ -1,7 +1,7 @@
-from data.getting_data import GetData, GetDataToEdit, UpdateData
+from Data.Getting_data import GetData, GetDataToEdit, UpdateData
 import streamlit as st
-from login.login import Login
-from information.filters import filters
+from Authentication.login import Login
+from Information.Filters import filters
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 # Senha para acesso à página de edições
@@ -114,6 +114,20 @@ def Edits():
             # Aplicar filtros:
             Table = filters(Table)
 
+            # Modificar a coluna 'Quantidade' com sinais '+' ou '-'
+            Table["Quantidade"] = Table.apply(
+                lambda row: (
+                    "+" + str(row["Quantidade"])
+                    if row["Tipo"] == "Maior"
+                    else (
+                        "-" + str(row["Quantidade"])
+                        if row["Tipo"] == "Menor"
+                        else row["Quantidade"]
+                    )
+                ),
+                axis=1,
+            )
+
             # Configurar opções da tabela:
             gb = GridOptionsBuilder.from_dataframe(Table)
             gridOptions = gb.build()
@@ -129,7 +143,7 @@ def Edits():
                 update_mode="MODEL_CHANGED",
                 fit_columns_on_grid_load=False,
                 enable_enterprise_modules=False,
-                height=200,
+                height=400,
                 reload_data=True,
             )
             st.write("---")

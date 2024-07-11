@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 from information.info import Table
 from login.login import Login
 from logout.logoff import Logout
-from edition.edit import Edits
+from Edition.Edit import Edits
 
 # Inicializando o serviço do banco de dados Firebase:
 try:

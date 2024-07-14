@@ -2,7 +2,7 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from Inputs.Form import FormDeem
+from inputs.form import FormDeem
 from streamlit_option_menu import option_menu
 from information.info import Table
 from login.login import Login

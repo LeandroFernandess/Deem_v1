@@ -4,7 +4,6 @@ from firebase_admin import firestore
 import pandas as pd
 
 # Inicializando o serviço do banco de dados Firebase:
-
 try:
     firebase_admin.get_app()
 except ValueError as e:
@@ -12,9 +11,6 @@ except ValueError as e:
     firebase_admin.initialize_app(cred)
 
 database = firestore.client()
-
-
-# Criando a função para pegar as informações do banco de dados Firebase e exibir na tabela da página:
 
 
 def GetData(user_id=None):
@@ -31,23 +27,54 @@ def GetData(user_id=None):
 
         data = []
         for doc in docs:
-            data.append(doc.to_dict())
+            data_dict = doc.to_dict()
 
-        return pd.DataFrame(data)
+            # Se a coluna "Data" existir, assegurar que está no formato ISO8601
+            if "Data" in data_dict:
+                try:
+                    data_dict["Data"] = pd.to_datetime(data_dict["Data"]).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+                except ValueError:
+                    data_dict["Data"] = str(data_dict["Data"])
+
+            # Garantir que Imagem seja uma lista de URLs se existir
+            if "Imagem" in data_dict and isinstance(data_dict["Imagem"], list):
+                data_dict["Imagem"] = data_dict["Imagem"]
+            else:
+                data_dict["Imagem"] = []
+
+            data.append(data_dict)
+
+        df = pd.DataFrame(data)
+
+        # Garantir que "Data" está como string no DataFrame
+        if "Data" in df.columns:
+            df["Data"] = df["Data"].astype(str)
+
+        return df
 
 
-# Função para obter dados do Firestore e editar
 def GetDataToEdit(user_id=None):
     db = firestore.client()
     if user_id:
         docs = db.collection("users").where("user_id", "==", user_id).stream()
     else:
         docs = db.collection("users").stream()
-    data = [doc.to_dict() for doc in docs]
+    data = []
+    for doc in docs:
+        data_dict = doc.to_dict()
+
+        # Garantir que Imagem seja uma lista de URLs se existir
+        if "Imagem" in data_dict and isinstance(data_dict["Imagem"], list):
+            data_dict["Imagem"] = data_dict["Imagem"]
+        else:
+            data_dict["Imagem"] = []
+
+        data.append(data_dict)
     return pd.DataFrame(data)
 
 
-# Função para atualizar dados no Firestore
 def UpdateData(document_id, updated_data):
     db = firestore.client()
     doc_ref = db.collection("users").document(document_id)

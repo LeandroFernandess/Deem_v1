@@ -9,7 +9,6 @@ password = "123456"
 
 
 def Edits():
-
     if "editable_data" not in st.session_state:
         st.session_state.editable_data = {}
 
@@ -22,7 +21,7 @@ def Edits():
     else:
         user_id = st.session_state.user_id
 
-    # Autenticação adicional para acessar a página de edições
+    #  Autenticação adicional para acessar a página de edições
     if "edit_page_access" not in st.session_state:
         st.session_state.edit_page_access = False
 
@@ -48,39 +47,7 @@ def Edits():
     )
     st.write("---")
 
-    user_data = GetData(user_id)
-
-    if "name" not in st.session_state:
-        st.session_state.name = user_data.get("name", "")
-
-    if "code" not in st.session_state:
-        st.session_state.code = user_data.get("code", "")
-
-    if "quantity" not in st.session_state:
-        st.session_state.quantity = user_data.get("quantity", "")
-
-    if "std" not in st.session_state:
-        price = user_data.get("std", 0)
-        st.session_state.std = (
-            f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        )
-
-    if "input_total" not in st.session_state:
-        st.session_state.input_total = ""
-
-    if "rc" not in st.session_state:
-        st.session_state.rc = user_data.get("rc", "")
-
-    if "observation" not in st.session_state:
-        st.session_state.observation = user_data.get("observation", "")
-
-    if "input_description" not in st.session_state:
-        st.session_state.input_description = user_data.get("description", "")
-
-    if "status" not in st.session_state:
-        st.session_state.status = user_data.get("status", "")
-
-    Table = GetDataToEdit()
+    Table = GetData()
 
     if Table.empty:
         st.warning(
@@ -89,6 +56,7 @@ def Edits():
     else:
         desired_columns = [
             "ID",
+            "Numero",
             "Responsavel",
             "Codigo",
             "Descricao",
@@ -111,22 +79,11 @@ def Edits():
         else:
             Table = Table[desired_columns]
 
+            # Ordenar a tabela com base no num_id
+            Table = Table.sort_values(by="Numero")
+
             # Aplicar filtros:
             Table = filters(Table)
-
-            # Modificar a coluna 'Quantidade' com sinais '+' ou '-'
-            Table["Quantidade"] = Table.apply(
-                lambda row: (
-                    "+" + str(row["Quantidade"])
-                    if row["Tipo"] == "Maior"
-                    else (
-                        "-" + str(row["Quantidade"])
-                        if row["Tipo"] == "Menor"
-                        else row["Quantidade"]
-                    )
-                ),
-                axis=1,
-            )
 
             # Configurar opções da tabela:
             gb = GridOptionsBuilder.from_dataframe(Table)
@@ -147,9 +104,14 @@ def Edits():
                 reload_data=True,
             )
             st.write("---")
-            selected_row_idx = st.selectbox(
-                "Selecione a linha para editar", Table.index
+            # Mapear num_id para índices do DataFrame
+            num_id_to_index = {row["Numero"]: index for index, row in Table.iterrows()}
+
+            selected_num_id = st.selectbox(
+                "Selecione o Número para editar", options=Table["Numero"]
             )
+
+            selected_row_idx = num_id_to_index[selected_num_id]
 
             if selected_row_idx is not None:
                 selected_row = Table.loc[selected_row_idx].to_dict()
@@ -157,14 +119,16 @@ def Edits():
                     st.session_state.editable_data[column] = st.text_input(
                         f"Editar {column}",
                         value=selected_row[column],
-                        key=f"{selected_row['ID']}-{column}",
+                        key=f"{selected_row['ID']}-{column}",  # Certifique-se de usar 'ID' aqui
                     )
 
                 if st.button("Salvar Alterações"):
                     updated_data = {
                         f"`{column}`": st.session_state.editable_data[column]
                         for column in desired_columns
-                        if column != "ID"
-                    }
-                    UpdateData(selected_row["ID"], updated_data)
+                        if column not in ["ID", "Numero"]
+                    }  # Excluindo 'ID' e 'num_id' de serem atualizados
+                    UpdateData(
+                        selected_row["ID"], updated_data
+                    )  # Usando 'ID' para identificar o documento
                     st.success("Dados atualizados com sucesso!")

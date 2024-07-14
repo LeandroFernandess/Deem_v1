@@ -3,7 +3,6 @@ from firebase_admin import credentials, firestore, storage
 from datetime import datetime
 
 # Inicializando o serviço do banco de dados Firebase:
-
 try:
     firebase_admin.get_app()
 except ValueError as e:
@@ -44,11 +43,20 @@ def AddData(
     # Definindo status fixo
     status = "Pendente de análise"
 
-    # Criando referência ao documento e definindo os dados
-    doc_ref = database.collection("users").document()
+    # Contar o número atual de documentos na coleção
+    collection_ref = database.collection("users")
+    documents = collection_ref.stream()
+    count = sum(1 for _ in documents)
+
+    # Gerar o próximo num_id
+    next_num_id = count + 1
+
+    # Criar referência ao documento e definir os dados
+    doc_ref = collection_ref.document()
     doc_ref.set(
         {
             "ID": doc_ref.id,
+            "Numero": next_num_id,  # Adicionar o identificador numérico
             "Responsavel": name,
             "Codigo": code,
             "Descricao": description,

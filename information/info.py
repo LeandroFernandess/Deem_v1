@@ -6,7 +6,9 @@ from information.filters import filters
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, AgGridTheme
 
 
+
 def Table():
+
     # Verificando se o usuário está logado:
     if "user_id" not in st.session_state:
         user_id = Login()
@@ -24,40 +26,6 @@ def Table():
     )
     st.write("---")
 
-    # Obtendo os dados do usuário logado:
-    user_data = GetData(user_id)
-
-    # Mantendo os valores dos inputs no session state:
-    if "name" not in st.session_state:
-        st.session_state.name = user_data.get("name", "")
-
-    if "code" not in st.session_state:
-        st.session_state.code = user_data.get("code", "")
-
-    if "quantity" not in st.session_state:
-        st.session_state.quantity = user_data.get("quantity", "")
-
-    if "std" not in st.session_state:
-        price = user_data.get("std", 0)
-        st.session_state.std = (
-            f"R$ {price:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        )
-
-    if "input_total" not in st.session_state:
-        st.session_state.input_total = ""
-
-    if "rc" not in st.session_state:
-        st.session_state.rc = user_data.get("rc", "")
-
-    if "observation" not in st.session_state:
-        st.session_state.observation = user_data.get("observation", "")
-
-    if "input_description" not in st.session_state:
-        st.session_state.input_description = user_data.get("description", "")
-
-    if "status" not in st.session_state:
-        st.session_state.status = user_data.get("status", "")
-
     # Obter os dados:
     Table = GetData()
 
@@ -67,8 +35,13 @@ def Table():
             "Nenhum dado inserido no banco de dados, por favor, preencha o formulário para visualizar os dados"
         )
     else:
-        # Selecionar e ordenar as colunas:
+        # Garantir a coluna "Data" está como string
+        if "Data" in Table.columns:
+            Table["Data"] = Table["Data"].astype(str)
+
+        # selecionar e ordenar as colunas:
         desired_columns = [
+            "Numero",
             "Responsavel",
             "Codigo",
             "Descricao",
@@ -92,22 +65,10 @@ def Table():
         else:
             Table = Table[desired_columns]
 
+            # Ordenar a tabela com base no num_id
+            Table = Table.sort_values(by="Numero")
             # Aplicar filtros:
             Table = filters(Table)
-
-            # Modificar a coluna 'Quantidade' com sinais '+' ou '-'
-            Table["Quantidade"] = Table.apply(
-                lambda row: (
-                    "+" + str(row["Quantidade"])
-                    if row["Tipo"] == "Maior"
-                    else (
-                        "-" + str(row["Quantidade"])
-                        if row["Tipo"] == "Menor"
-                        else row["Quantidade"]
-                    )
-                ),
-                axis=1,
-            )
 
             # Configurar opções da tabela:
             gb = GridOptionsBuilder.from_dataframe(Table)

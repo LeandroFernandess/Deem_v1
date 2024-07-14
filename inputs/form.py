@@ -59,6 +59,9 @@ def FormDeem():
     if "input_description" not in st.session_state:
         st.session_state.input_description = user_data.get("description", "")
 
+    if "status" not in st.session_state:
+        st.session_state.status = user_data.get("status", "")
+
     # Criando os inputs para o usuário:
 
     input_name = (
@@ -129,7 +132,7 @@ def FormDeem():
     )
 
     input_files = st.file_uploader(
-        "Imagem", accept_multiple_files=True, key="input_file"
+        "Imagem", accept_multiple_files=True, key="input_file", type=["PNG", "JPEG"]
     )
 
     input_date = st.date_input("Data do ocorrido", format="DD/MM/YYYY")

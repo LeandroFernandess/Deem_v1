@@ -7,8 +7,7 @@ from inputs.Updates import UpdateDescription, CalculateTotal
 
 def FormDeem():
 
-    # Verificando se o usuário está logado:
-
+    # Verificando se o usuário está logado
     if "user_id" not in st.session_state:
         user_id = Login()
         if user_id:
@@ -18,20 +17,17 @@ def FormDeem():
     else:
         user_id = st.session_state.user_id
 
-    # Criando o título do formulário:
-
+    # Criando o título do formulário
     st.markdown(
         "<h1 style='text-align: center;'>Formulário de divergências</h1>",
         unsafe_allow_html=True,
     )
     st.write("---")
 
-    # Obtendo os dados do usuário logado:
-
+    # Obtendo os dados do usuário logado
     user_data = GetData(user_id)
 
-    # Mantendo os valores dos inputs no session state:
-
+    # Manter os valores dos inputs no session_state
     if "name" not in st.session_state:
         st.session_state.name = user_data.get("name", "")
 
@@ -62,8 +58,10 @@ def FormDeem():
     if "status" not in st.session_state:
         st.session_state.status = user_data.get("status", "")
 
-    # Criando os inputs para o usuário:
+    if "show_review" not in st.session_state:
+        st.session_state.show_review = False
 
+    # Criando os inputs para o usuário
     input_name = (
         st.text_input(
             "Nome",
@@ -137,31 +135,53 @@ def FormDeem():
 
     input_date = st.date_input("Data do ocorrido", format="DD/MM/YYYY")
 
-    if st.button("Confirmar Deem"):
+    if not st.session_state.show_review:
+        if st.button("Enviar informações da Deem"):
+            if input_code and input_name and input_quantity:
+                st.session_state.show_review = True
+            else:
+                st.error(
+                    "Por favor, preencha todos os campos obrigatórios. (Nome, Código e Quantidade)"
+                )
 
-        # Inserindo as informações dos inputs no banco de dados:
+    if st.session_state.show_review:
+        with st.expander("Revisão das Informações", expanded=True):
+            st.markdown('<div class="review-box">', unsafe_allow_html=True)
+            st.write(f"Nome: {input_name}")
+            st.write(f"Código: {input_code}")
+            st.write(f"Quantidade: {input_quantity}")
+            st.write(f"Relação de Carga: {input_rc}")
+            st.write(f"Tipo da Deem: {input_type}")
+            st.write(f"Área de recebimento: {input_area}")
+            st.write(f"Observação: {input_observation}")
+            st.write(f"Data do ocorrido: {input_date.strftime('%d/%m/%Y')}")
 
-        if input_code and input_name and input_quantity:
-            input_date = input_date.strftime("%Y-%m-%d")
-            AddData(
-                input_name,
-                input_code,
-                input_description,
-                input_quantity,
-                input_std,
-                input_total,
-                input_rc,
-                input_area,
-                input_observation,
-                input_type,
-                input_files,
-                input_date,
-                user_id,
-            )
-            st.success(
-                "Divergência inserida com sucesso! Você pode verificar a informação na guia **Visão Geral**"
-            )
-        else:
-            st.error(
-                "Por favor, preencha todos os campos obrigatórios. (Nome, Código e Quantidade)"
-            )
+            for file in input_files:
+                st.image(file, caption=file.name)
+
+        if st.button("Confirmar informações da Deem"):
+            if input_code and input_name and input_quantity:
+                input_date = input_date.strftime("%Y-%m-%d")
+                AddData(
+                    input_name,
+                    input_code,
+                    input_description,
+                    input_quantity,
+                    input_std,
+                    input_total,
+                    input_rc,
+                    input_area,
+                    input_observation,
+                    input_type,
+                    input_files,
+                    input_date,
+                    user_id,
+                )
+                st.success(
+                    "Divergência inserida com sucesso! Você pode verificar a informação na guia Visão Geral"
+                )
+                st.session_state.show_review = False
+            else:
+                st.error(
+                    "Por favor, preencha todos os campos obrigatórios. (Nome, Código e Quantidade)"
+                )

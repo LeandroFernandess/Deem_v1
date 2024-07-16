@@ -52,6 +52,7 @@ def Table():
             "Area",
             "RC",
             "Observacao",
+            "Comentario",
             "Data",
             "Status",
         ]

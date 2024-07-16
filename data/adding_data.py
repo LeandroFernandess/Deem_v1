@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore, storage
 from datetime import datetime
 
-# Inicializando o serviço do banco de dados Firebase:
+# Inicializando o serviço do banco de dados Firebase
 try:
     firebase_admin.get_app()
 except ValueError as e:
@@ -12,6 +12,7 @@ except ValueError as e:
 database = firestore.client()
 
 
+# Função para adicionar imagem no Firebase Storage
 def AddImage(uploaded_file, user_id):
     bucket = storage.bucket()
     blob = bucket.blob(
@@ -21,6 +22,7 @@ def AddImage(uploaded_file, user_id):
     return blob.public_url
 
 
+# Modificando a função `AddData` para aceitar os novos parâmetros
 def AddData(
     name,
     code,
@@ -31,6 +33,7 @@ def AddData(
     rc,
     area,
     observation,
+    comment,
     type,
     files,
     date,
@@ -38,7 +41,7 @@ def AddData(
 ):
 
     # Gerando URLs das imagens (não alterado)
-    file_urls = [AddImage(file, user_id) for file in files]
+    file_urls = [AddImage(file, user_id) for file in files if file is not None]
 
     # Definindo status fixo
     status = "Pendente de análise"
@@ -66,6 +69,7 @@ def AddData(
             "RC": rc,
             "Area": area,
             "Observacao": observation,
+            "Comentario": comment,  # Adicionando o campo de comentário
             "Tipo": type,
             "Imagem": file_urls,
             "Data": date,

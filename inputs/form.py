@@ -7,7 +7,7 @@ from inputs.Updates import UpdateDescription, CalculateTotal
 
 def FormDeem():
 
-    # Verificando se o usuário está logado
+    # Verificando se o usuário está logado:
     if "user_id" not in st.session_state:
         user_id = Login()
         if user_id:
@@ -17,17 +17,17 @@ def FormDeem():
     else:
         user_id = st.session_state.user_id
 
-    # Criando o título do formulário
+    # Criando o título do formulário:
     st.markdown(
         "<h1 style='text-align: center;'>Formulário de divergências</h1>",
         unsafe_allow_html=True,
     )
     st.write("---")
 
-    # Obtendo os dados do usuário logado
+    # Obtendo os dados do usuário logado:
     user_data = GetData(user_id)
 
-    # Manter os valores dos inputs no session_state
+    # Manter os valores dos inputs no session_state:
     if "name" not in st.session_state:
         st.session_state.name = user_data.get("name", "")
 
@@ -52,6 +52,9 @@ def FormDeem():
     if "observation" not in st.session_state:
         st.session_state.observation = user_data.get("observation", "")
 
+    if "comment" not in st.session_state:
+        st.session_state.comment = ""  # Novo campo adicionado
+
     if "input_description" not in st.session_state:
         st.session_state.input_description = user_data.get("description", "")
 
@@ -61,7 +64,7 @@ def FormDeem():
     if "show_review" not in st.session_state:
         st.session_state.show_review = False
 
-    # Criando os inputs para o usuário
+    # Criando os inputs para o usuário:
     input_name = (
         st.text_input(
             "Nome",
@@ -129,14 +132,25 @@ def FormDeem():
         placeholder="Insira informações adicionais ao ocorrido",
     )
 
+    input_comment = st.text_input(
+        "Comentário",
+        key="input_comment",
+        value=st.session_state.comment,
+        placeholder="Deem ainda não analisada",
+        disabled=True,
+    )
+
     input_files = st.file_uploader(
-        "Imagem", accept_multiple_files=True, key="input_file", type=["PNG", "JPEG"]
+        "Imagem",
+        accept_multiple_files=True,
+        key="input_file",
+        type=["png", "jpeg", "jpg"],
     )
 
     input_date = st.date_input("Data do ocorrido", format="DD/MM/YYYY")
 
     if not st.session_state.show_review:
-        if st.button("Enviar informações da Deem"):
+        if st.button("Confirmar Deem"):
             if input_code and input_name and input_quantity:
                 st.session_state.show_review = True
             else:
@@ -146,6 +160,20 @@ def FormDeem():
 
     if st.session_state.show_review:
         with st.expander("Revisão das Informações", expanded=True):
+            st.markdown(
+                """
+                <style>
+                .review-box {
+                    border: 2px solid 4CAF50;
+                    padding: 10px;
+                    border-radius: 10px;
+                    background-color: f9f9f9;
+                    margin-bottom: 10px;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
             st.markdown('<div class="review-box">', unsafe_allow_html=True)
             st.write(f"Nome: {input_name}")
             st.write(f"Código: {input_code}")
@@ -159,7 +187,9 @@ def FormDeem():
             for file in input_files:
                 st.image(file, caption=file.name)
 
-        if st.button("Confirmar informações da Deem"):
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        if st.button("Confirmar informações e enviar os dados"):
             if input_code and input_name and input_quantity:
                 input_date = input_date.strftime("%Y-%m-%d")
                 AddData(
@@ -172,6 +202,7 @@ def FormDeem():
                     input_rc,
                     input_area,
                     input_observation,
+                    input_comment,  # Passando o comentário
                     input_type,
                     input_files,
                     input_date,

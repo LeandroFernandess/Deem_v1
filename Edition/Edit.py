@@ -67,6 +67,7 @@ def Edits():
             "Area",
             "RC",
             "Observacao",
+            "Comentario",
             "Data",
             "Status",
         ]
@@ -115,12 +116,20 @@ def Edits():
 
             if selected_row_idx is not None:
                 selected_row = Table.loc[selected_row_idx].to_dict()
+
                 for column in desired_columns:
-                    st.session_state.editable_data[column] = st.text_input(
-                        f"Editar {column}",
-                        value=selected_row[column],
-                        key=f"{selected_row['ID']}-{column}",  # Certifique-se de usar 'ID' aqui
-                    )
+                    if column == "Comentario":
+                        st.session_state.editable_data[column] = st.text_area(
+                            f"Editar {column}",
+                            value=selected_row[column],
+                            key=f"{selected_row['ID']}-{column}",
+                        )
+                    else:
+                        st.session_state.editable_data[column] = st.text_input(
+                            f"Editar {column}",
+                            value=selected_row[column],
+                            key=f"{selected_row['ID']}-{column}",
+                        )
 
                 if st.button("Salvar Alterações"):
                     updated_data = {
@@ -132,3 +141,4 @@ def Edits():
                         selected_row["ID"], updated_data
                     )  # Usando 'ID' para identificar o documento
                     st.success("Dados atualizados com sucesso!")
+

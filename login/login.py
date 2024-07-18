@@ -6,7 +6,7 @@ import pyrebase
 config = {
     "apiKey": "AIzaSyC0GZVwEKNLLcDFSfd3eGBWJbuhZAn4O6A",
     "authDomain": "divergencia-fb3d4.firebaseapp.com",
-    "databaseURL": "https://divergencia-fb3d4.firebaseio.com",
+    "databaseURL": "https://divergencia-fb3d4-default-rtdb.firebaseio.com",
     "projectId": "divergencia-fb3d4",
     "storageBucket": "divergencia-fb3d4.appspot.com",
     "messagingSenderId": "1001985982358",

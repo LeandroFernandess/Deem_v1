@@ -8,7 +8,7 @@ try:
 except ValueError as e:
     cred = credentials.Certificate("credentials.json")
     firebase_admin.initialize_app(
-        cred, {"storageBucket": "divergencia-fb3d4.appspot.com"}
+        cred, {"storageBucket": "deem-fa6c8.appspot.com"}
     )
 
 database = firestore.client()

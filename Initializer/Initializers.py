@@ -4,7 +4,7 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import credentials
 from streamlit_option_menu import option_menu
-from Authentication.login import Login
+from login.login import Login
 
 
 """Variáveis"""

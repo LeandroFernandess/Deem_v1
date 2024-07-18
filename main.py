@@ -1,8 +1,8 @@
 """ Importando as bibliotecas necessárias """
 
 import streamlit as st
-from inputs.Form import FormDeem
-from information.Info import Table
+from inputs.form import FormDeem
+from information.info import Table
 from logout.Logoff import Logout
 from Edition.Edit import Edits
 from Initializer.Initializers import (

@@ -4,13 +4,13 @@ import pyrebase
 
 # Configuração do Firebase:
 config = {
-    "apiKey": "AIzaSyDJnEKvU9-yJSlTqGT3O9as2paIzJFNBts",
-    "authDomain": "deem-fa6c8.firebaseapp.com",
-    "databaseURL": "https://deem-fa6c8-default-rtdb.firebaseio.com",
-    "projectId": "deem-fa6c8",
-    "storageBucket": "deem-fa6c8.appspot.com",
-    "messagingSenderId": "165164284179",
-    "appId": "1:165164284179:web:c9b6e99c834dffb08702e6",
+    "apiKey": "AIzaSyC0GZVwEKNLLcDFSfd3eGBWJbuhZAn4O6A",
+    "authDomain": "divergencia-fb3d4.firebaseapp.com",
+    "databaseURL": "https://divergencia-fb3d4.firebaseio.com",
+    "projectId": "divergencia-fb3d4",
+    "storageBucket": "divergencia-fb3d4.appspot.com",
+    "messagingSenderId": "1001985982358",
+    "appId": "1:1001985982358:web:829168017afc49e10667b7",
 }
 
 # Inicializando e autenticando o aplicativo:

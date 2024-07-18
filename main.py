@@ -3,7 +3,7 @@
 import streamlit as st
 from inputs.form import FormDeem
 from information.info import Table
-from logout.Logoff import Logout
+from logout.logoff import Logout
 from Edition.Edit import Edits
 from Initializer.Initializers import (
     InitializeFirebase,
